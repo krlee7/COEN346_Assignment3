@@ -24,6 +24,8 @@ public class Process extends Thread{
 				
 		while(System.currentTimeMillis() <= processEndTime){
 			
+			System.out.println(System.currentTimeMillis() / 1000);
+			
 			try{
 				mutex.acquire();
 				Command firstCommand = commandList.get(0);

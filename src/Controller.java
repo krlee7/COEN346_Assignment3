@@ -23,6 +23,9 @@ public class Controller extends Thread{
 		this.mainMemory = mainMemory;
 		this.processList = processList;
 		this.commandList = commandList;
+		
+		disk = new File("disk.txt");
+		outputTextFile = new File("outputTextFile.txt");
 	}
 	
 	@Override
@@ -31,10 +34,13 @@ public class Controller extends Thread{
 		startTime = System.currentTimeMillis();		
 		
 		while(!commandList.isEmpty()){
-						
+									
 			if(checkReadyQueue(readyQueue)){
 				Process currentProcess = getFrontProcess(readyQueue);
 				currentProcess.setCommandList(commandList);
+				currentProcess.setMainMemory(mainMemory);
+				currentProcess.setDisk(disk);
+				currentProcess.setOutputTextFile(outputTextFile);
 				currentProcess.start();
 				readyQueue.remove();
 			}
@@ -58,8 +64,11 @@ public class Controller extends Thread{
 	}
 	
 	public void updateReadyQueue(ArrayList processList){
+				
 		for(int i=0;i<processList.size();i++){
-			if((startTime-System.currentTimeMillis()) == ((Process) processList.get(i)).getReadyTime()){
+			
+			if((System.currentTimeMillis()-startTime) >= ((Process) processList.get(i)).getReadyTime()){
+				
 				readyQueue.add((Process) processList.get(i));
 			}
 		}

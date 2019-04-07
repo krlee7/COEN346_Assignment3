@@ -5,7 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import javax.sound.sampled.Line;
 
@@ -41,7 +43,7 @@ public class Command {
 		
 		if (!this.writeMemory(mainMemory, variableID, value)) { // if was not able to store in main memory
 			
-			System.out.println("Main Memory was too full, trying to insert into disk ...");
+			System.out.println("Main Memory was too full, insert into disk ...");
 			
 			this.writeDisk(disk, variableID, value);
 			
@@ -105,37 +107,50 @@ public class Command {
 	}
 	
 	// execute command
-	public void doCommand(Variable[] mainMemory, File disk, File outputTextFile) throws IOException {
+	public void doCommand(Variable[] mainMemory, File disk, File outputTextFile) throws IOException, InterruptedException {
+		
+		// random time gen
+		
+		Random r = new Random();
+		int low = 1;
+		int high = 1000;
+		int delayTime = r.nextInt(high-low) + low;
 		
 		// case statement here
 		
 		String lineString = "";
 		
 		switch (commandType) {
-		case "STORE":
+		case "Store":
 			
 			lineString = "STORE : " + Integer.toString(variableID) + Integer.toString(value);
-			this.writeOutputText(lineString, outputTextFile);
+			//this.writeOutputText(lineString, outputTextFile);
 			
 			this.store(mainMemory, disk);
 			
+			TimeUnit.MILLISECONDS.sleep(delayTime);
+			
 			break;
 			
-		case "RELEASE":
+		case "Release":
 			
 			lineString = "RELEASE : " + Integer.toString(variableID) + Integer.toString(value);
-			this.writeOutputText(lineString, outputTextFile);
+			//this.writeOutputText(lineString, outputTextFile);
 			
 			this.release(mainMemory);
 			
+			TimeUnit.MILLISECONDS.sleep(delayTime);
+			
 			break;
 			
-		case "LOOKUP":
+		case "Lookup":
 			
 			lineString = "RELEASE : " + Integer.toString(variableID) + Integer.toString(value);
-			this.writeOutputText(lineString, outputTextFile);
+			//this.writeOutputText(lineString, outputTextFile);
 			
 			this.lookup(mainMemory, disk);
+			
+			TimeUnit.MILLISECONDS.sleep(delayTime);
 	
 			break;
 		}
@@ -190,7 +205,7 @@ public class Command {
         		variable = new Variable(varID, varValue);
         		
         		System.out.print("Found Variable : ");
-        		System.out.print(varID);
+        		System.out.println(varID);
         	}
         }
                 
@@ -203,9 +218,9 @@ public class Command {
 		
 		// Writing variable
 		
-		fr.write(variableID);
+		fr.write(Integer.toString(variableID));
 		fr.write(" ");
-		fr.write(value);
+		fr.write(Integer.toString(value));
 		fr.write(System.getProperty("line.separator")); // add an end line 
 		
 		fr.close();
@@ -346,7 +361,7 @@ public class Command {
         		variable = new Variable(varID, varValue);
         		
         		System.out.print("Found Variable : ");
-        		System.out.print(varID);
+        		System.out.println(varID);
         		
         		currentLine = "";
         	}
