@@ -1,20 +1,24 @@
+import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class Controller extends Thread{
-	Queue<Process> readyQueue = new LinkedList<>();
-	ArrayList<Command> commandList;	//Read file
-	ArrayList<Process> processList;	//Read file
+	private ArrayList<Command> commandList;	//Read file
+	private ArrayList<Process> processList;	//Read file		
 	
 	// memory containers
-	ArrayList<Variable> mainMemory;	//Read file
+	private Variable[] mainMemory;
+	private File disk; // filepath to our file on our system
+	private File outputTextFile; // file to output our results
 	
+	
+	Queue<Process> readyQueue = new LinkedList<>();
 	long startTime;
 	
 	// constructor
 	
-	public Controller(ArrayList<Variable> mainMemory, ArrayList<Process> processList,ArrayList<Command> commandList) {
+	public Controller(Variable[] mainMemory, ArrayList<Process> processList,ArrayList<Command> commandList) {
 		
 		this.mainMemory = mainMemory;
 		this.processList = processList;
@@ -24,25 +28,13 @@ public class Controller extends Thread{
 	@Override
 	public void run(){
 		
-		Process process = new Process(1,1,1);
+		startTime = System.currentTimeMillis();		
 		
-		System.out.println("Before : ");
-		for(int i = 0; i < commandList.size(); i++) {
-			commandList.get(i).print();
-		}
-		
-		process.modifyCommandList(commandList);
-		
-		System.out.println("After : ");
-		for(int i = 0; i < commandList.size(); i++) {
-			commandList.get(i).print();
-		}
-		
-		/*
-		startTime = System.currentTimeMillis();
 		while(!commandList.isEmpty()){
+						
 			if(checkReadyQueue(readyQueue)){
 				Process currentProcess = getFrontProcess(readyQueue);
+				currentProcess.setCommandList(commandList);
 				currentProcess.start();
 				readyQueue.remove();
 			}
@@ -50,7 +42,7 @@ public class Controller extends Thread{
 			updateReadyQueue(processList);
 			
 		}
-		*/
+				
 	}
 	
 	//Check if ready queue is empty
@@ -71,7 +63,5 @@ public class Controller extends Thread{
 				readyQueue.add((Process) processList.get(i));
 			}
 		}
-		
 	}
-	
 }

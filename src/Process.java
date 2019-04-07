@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
@@ -6,24 +8,31 @@ public class Process extends Thread{
 	private int id;
 	private long readyTime;
 	private long serviceTime;
-	private Command command;	//Needs implementation
+	ArrayList<Command> commandList;
 	
-	ArrayList<String> commandList;	//Needs read file
+	// memory containers
+	private Variable[] mainMemory;
+	File disk; // filepath to our file on our system
+	File outputTextFile; // file to output our results
+	
 	Semaphore mutex = new Semaphore(1);
 	
 	@Override
 	public void run(){
 		long startTime = System.currentTimeMillis();
 		long processEndTime = startTime + this.serviceTime;
-		
-		while(System.currentTimeMillis() != processEndTime){
+				
+		while(System.currentTimeMillis() <= processEndTime){
 			
 			try{
 				mutex.acquire();
-				//Command firstCommand = commandList.getFirst();	//Needs implementation
-				//firstCommand.doCommand();	//Needs implementation
+				Command firstCommand = commandList.get(0);
+				firstCommand.doCommand(mainMemory,  disk,  outputTextFile);	//Needs implementation
 				commandList.remove(0);	//Remove first element in list
 			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}finally{
@@ -50,8 +59,25 @@ public class Process extends Thread{
 		this.readyTime = readyTime;
 	}
 	
-	public void modifyCommandList(ArrayList<Command> commandList) {
-		commandList.remove(0);
+	// SET 
+	public void setCommandList(ArrayList<Command> commandList) {
+		
+		this.commandList = commandList;
+	}
+	
+	public void setMainMemory(Variable[] mainMemory) {
+		
+		this.mainMemory = mainMemory;
+	}
+
+	public void setDisk(File disk) {
+	
+		this.disk = disk;
+	}
+	
+	public void setOutputTextFile(File outputTextFile) {
+		
+		this.outputTextFile = outputTextFile;
 	}
 	
 	// print

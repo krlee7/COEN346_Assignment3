@@ -1,5 +1,7 @@
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -7,7 +9,7 @@ public class Driver {
 	
 	public static void main (String args[]) throws FileNotFoundException
 	{
-	
+		
 		// read the process text file 
 		
         // Reading Input File
@@ -50,8 +52,7 @@ public class Driver {
         int memSize = Integer.parseInt(lineMem);
         
         // creating our main memory
-    	ArrayList<Variable> mainMemory = new ArrayList<Variable>(memSize);
-    
+    	Variable[] mainMemory = new Variable[memSize];
     	
     	// read the command file
     	
@@ -79,6 +80,16 @@ public class Driver {
         		commandsList.add(command);
 			}
 	}
+        
+        System.out.println("testing input ...");
+        
+		for(int i = 0; i < processList.size(); i++) {
+			processList.get(i).print();
+		}
+        
+		for(int i = 0; i < commandsList.size(); i++) {
+			commandsList.get(i).print();
+		}
         
     	// creating the controller with all that it needs
     	Controller controller = new Controller(mainMemory, processList, commandsList);
