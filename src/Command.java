@@ -116,6 +116,8 @@ public class Command {
 		int high = 1000;
 		int delayTime = r.nextInt(high-low) + low;
 		
+		//delayTime = 1000;
+		
 		// case statement here
 		
 		String lineString = "";
@@ -123,8 +125,8 @@ public class Command {
 		switch (commandType) {
 		case "Store":
 			
-			lineString = "STORE : " + Integer.toString(variableID) + Integer.toString(value);
-			//this.writeOutputText(lineString, outputTextFile);
+			lineString = "STORE : " + Integer.toString(variableID) + " " + Integer.toString(value);
+			this.writeOutputText(lineString, outputTextFile);
 			
 			this.store(mainMemory, disk);
 			
@@ -134,8 +136,8 @@ public class Command {
 			
 		case "Release":
 			
-			lineString = "RELEASE : " + Integer.toString(variableID) + Integer.toString(value);
-			//this.writeOutputText(lineString, outputTextFile);
+			lineString = "RELEASE : " + Integer.toString(variableID) + " " + Integer.toString(value);
+			this.writeOutputText(lineString, outputTextFile);
 			
 			this.release(mainMemory);
 			
@@ -145,10 +147,12 @@ public class Command {
 			
 		case "Lookup":
 			
-			lineString = "RELEASE : " + Integer.toString(variableID) + Integer.toString(value);
-			//this.writeOutputText(lineString, outputTextFile);
+			lineString = "LOOKUP : " + Integer.toString(variableID) + " " + Integer.toString(value);
+			this.writeOutputText(lineString, outputTextFile);
 			
-			this.lookup(mainMemory, disk);
+			int value = this.lookup(mainMemory, disk);
+			
+			System.out.println("Value : " + Integer.toString(value));
 			
 			TimeUnit.MILLISECONDS.sleep(delayTime);
 	
@@ -309,6 +313,8 @@ public class Command {
 		
 		for (int i=0; i<mainMemory.length; i++) {
 			if (mainMemory[i].getLastAccessedCounter() >= maxCounter) {
+				
+				maxCounter = mainMemory[i].getLastAccessedCounter();
 				variableIndexLRA = i;
 			}
 		}		
@@ -379,7 +385,7 @@ public class Command {
 	public void writeOutputText(String line, File output) throws IOException {
 		
 		FileWriter fileWriter = new FileWriter(output);
-	    fileWriter.write(line);
+	    fileWriter.write(line + System.getProperty("line.separator"));
 	    fileWriter.close();
 	}
 }

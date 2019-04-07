@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -31,6 +32,25 @@ public class Controller extends Thread{
 	@Override
 	public void run(){
 		
+		while(!commandList.isEmpty()){
+			
+			Command first = commandList.get(0);
+			try {
+				first.doCommand(mainMemory,  disk,  outputTextFile);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+			commandList.remove(0);
+		}
+		
+		System.out.println("Command List size : ");
+		System.out.println(commandList.size());
+		
+		/*
 		startTime = System.currentTimeMillis();		
 		
 		while(!commandList.isEmpty()){
@@ -48,6 +68,7 @@ public class Controller extends Thread{
 			updateReadyQueue(processList);
 			
 		}
+		*/
 				
 	}
 	
