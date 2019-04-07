@@ -20,9 +20,12 @@ public class Process extends Thread{
 			
 			try{
 				mutex.acquire();
-				Command firstCommand = commandList.getFirst();	//Needs implementation
-				firstCommand.doCommand();	//Needs implementation
+				//Command firstCommand = commandList.getFirst();	//Needs implementation
+				//firstCommand.doCommand();	//Needs implementation
 				commandList.remove(0);	//Remove first element in list
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}finally{
 				mutex.release();
 			} 
@@ -45,6 +48,21 @@ public class Process extends Thread{
 
 	public void setReadyTime(long readyTime) {
 		this.readyTime = readyTime;
+	}
+	
+	public void modifyCommandList(ArrayList<Command> commandList) {
+		commandList.remove(0);
+	}
+	
+	// print
+	public void print() {
+		
+		System.out.print("Process : ");
+		System.out.print(id);
+		System.out.print(" ");
+		System.out.print(readyTime);
+		System.out.print(" ");
+		System.out.println(serviceTime);
 	}
 	
 }

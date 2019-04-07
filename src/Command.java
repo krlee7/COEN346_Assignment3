@@ -22,5 +22,16 @@ public class Command {
 		this.variableID = variableID;
 	}
 	
+	// print
+	public void print() {
+		
+		System.out.print("Command : ");
+		System.out.print(commandType);
+		System.out.print(" ");
+		System.out.print(variableID);
+		System.out.print(" ");
+		System.out.println(value);
+	}
+	
 
 }

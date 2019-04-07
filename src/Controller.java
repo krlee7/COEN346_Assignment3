@@ -23,6 +23,22 @@ public class Controller extends Thread{
 	
 	@Override
 	public void run(){
+		
+		Process process = new Process(1,1,1);
+		
+		System.out.println("Before : ");
+		for(int i = 0; i < commandList.size(); i++) {
+			commandList.get(i).print();
+		}
+		
+		process.modifyCommandList(commandList);
+		
+		System.out.println("After : ");
+		for(int i = 0; i < commandList.size(); i++) {
+			commandList.get(i).print();
+		}
+		
+		/*
 		startTime = System.currentTimeMillis();
 		while(!commandList.isEmpty()){
 			if(checkReadyQueue(readyQueue)){
@@ -34,6 +50,7 @@ public class Controller extends Thread{
 			updateReadyQueue(processList);
 			
 		}
+		*/
 	}
 	
 	//Check if ready queue is empty

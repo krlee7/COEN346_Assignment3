@@ -24,14 +24,12 @@ public class Driver {
         	if(firstLine) {
 
                 String line = scanner.nextLine();
-                System.out.println(line);
 
                 firstLine = false;
                 continue;
             }
         	
         	String line = scanner.nextLine();
-        	System.out.println(line);
         	
         	String delims = "[ ]+";
         	String[] tokens = line.split(delims);
@@ -46,7 +44,7 @@ public class Driver {
         // read the memconfig file
         
         // Reading the input file
-        scanner = new Scanner(new FileInputStream("processes.txt"));
+        scanner = new Scanner(new FileInputStream("memconfig.txt"));
         
         String lineMem = scanner.nextLine();
         int memSize = Integer.parseInt(lineMem);
@@ -58,14 +56,13 @@ public class Driver {
     	// read the command file
     	
         // Reading Input File
-        scanner = new Scanner(new FileInputStream("processes.txt"));
+        scanner = new Scanner(new FileInputStream("commands.txt"));
         
         ArrayList<Command> commandsList = new ArrayList<Command>();
         
         while(scanner.hasNextLine()){
         	
         	String lineCommand = scanner.nextLine();
-        	System.out.println(lineCommand);
         	
         	String delims = "[ ]+";
         	String[] tokens = lineCommand.split(delims);
@@ -85,5 +82,7 @@ public class Driver {
         
     	// creating the controller with all that it needs
     	Controller controller = new Controller(mainMemory, processList, commandsList);
+    	
+    	controller.start();
 }
 }
