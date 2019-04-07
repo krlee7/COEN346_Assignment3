@@ -37,7 +37,6 @@ public class Process extends Thread{
 		this.id = id;
 		this.readyTime = readyTime;
 		this.serviceTime = serviceTime;
-		this.commandList = commandList;
 		
 	}
 
