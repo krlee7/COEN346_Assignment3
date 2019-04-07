@@ -6,9 +6,9 @@ public class Process extends Thread{
 	private int id;
 	private long readyTime;
 	private long serviceTime;
-	private Command command;	//Needs implementation
+	ArrayList<Command> commandList;
 	
-	ArrayList<String> commandList;	//Needs read file
+	//ArrayList<String> commandList;	//Needs read file
 	Semaphore mutex = new Semaphore(1);
 	
 	@Override
@@ -20,11 +20,12 @@ public class Process extends Thread{
 			
 			try{
 				mutex.acquire();
-				Command firstCommand = commandList.getFirst();	//Needs implementation
+				Command firstCommand = this.commandList.getFirst();	//Needs implementation
 				firstCommand.doCommand();	//Needs implementation
 				commandList.remove(0);	//Remove first element in list
-			}finally{
 				mutex.release();
+			}catch(Exception ex){
+				ex.printStackTrace();
 			} 
 			
 			
@@ -34,8 +35,9 @@ public class Process extends Thread{
 	
 	public Process(int id, long readyTime, long serviceTime){
 		this.id = id;
-		this.setReadyTime(readyTime);
+		this.readyTime = readyTime;
 		this.serviceTime = serviceTime;
+		this.commandList = commandList;
 		
 	}
 
@@ -46,6 +48,12 @@ public class Process extends Thread{
 	public void setReadyTime(long readyTime) {
 		this.readyTime = readyTime;
 	}
+	
+	public void setCommandList(ArrayList commandList){
+		this.commandList = commandList;
+	}
+	
+
 	
 }
 

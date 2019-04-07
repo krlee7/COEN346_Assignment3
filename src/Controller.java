@@ -3,13 +3,14 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class Controller extends Thread{
-	Queue<Process> readyQueue = new LinkedList<>();
-	ArrayList<Command> commandList;	//Read file
-	ArrayList<Process> processList;	//Read file
+	
+	private ArrayList<Command> commandList;	//Read file
+	private ArrayList<Process> processList;	//Read file
 	
 	// memory containers
-	ArrayList<Variable> mainMemory;	//Read file
+	private ArrayList<Variable> mainMemory;	//Read file
 	
+	Queue<Process> readyQueue = new LinkedList<>();
 	long startTime;
 	
 	// constructor
@@ -27,6 +28,7 @@ public class Controller extends Thread{
 		while(!commandList.isEmpty()){
 			if(checkReadyQueue(readyQueue)){
 				Process currentProcess = getFrontProcess(readyQueue);
+				currentProcess.setCommandList(commandList);
 				currentProcess.start();
 				readyQueue.remove();
 			}
