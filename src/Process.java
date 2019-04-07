@@ -5,7 +5,7 @@ public class Process extends Thread{
 	
 	private int id;
 	private long readyTime;
-	private long duration;
+	private long serviceTime;
 	private Command command;	//Needs implementation
 	
 	ArrayList<String> commandList;	//Needs read file
@@ -14,7 +14,7 @@ public class Process extends Thread{
 	@Override
 	public void run(){
 		long startTime = System.currentTimeMillis();
-		long processEndTime = startTime + this.duration;
+		long processEndTime = startTime + this.serviceTime;
 		
 		while(System.currentTimeMillis() != processEndTime){
 			
@@ -32,11 +32,10 @@ public class Process extends Thread{
 		
 	}
 	
-	public Process(int id, long readyTime, long duration, Command command){
+	public Process(int id, long readyTime, long serviceTime){
 		this.id = id;
 		this.setReadyTime(readyTime);
-		this.duration = duration;
-		this.command = command;
+		this.serviceTime = serviceTime;
 		
 	}
 
@@ -48,5 +47,11 @@ public class Process extends Thread{
 		this.readyTime = readyTime;
 	}
 	
-
 }
+
+// [CHANGES MADE]
+
+/*
+- change duration -> serviceTime
+- deleted command from constructor
+*/

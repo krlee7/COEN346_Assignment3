@@ -4,10 +4,22 @@ import java.util.Queue;
 
 public class Controller extends Thread{
 	Queue<Process> readyQueue = new LinkedList<>();
-	ArrayList<String> commandList;	//Read file
+	ArrayList<Command> commandList;	//Read file
 	ArrayList<Process> processList;	//Read file
 	
+	// memory containers
+	ArrayList<Variable> mainMemory;	//Read file
+	
 	long startTime;
+	
+	// constructor
+	
+	public Controller(ArrayList<Variable> mainMemory, ArrayList<Process> processList,ArrayList<Command> commandList) {
+		
+		this.mainMemory = mainMemory;
+		this.processList = processList;
+		this.commandList = commandList;
+	}
 	
 	@Override
 	public void run(){
@@ -20,7 +32,6 @@ public class Controller extends Thread{
 			}
 			
 			updateReadyQueue(processList);
-			
 			
 		}
 	}
