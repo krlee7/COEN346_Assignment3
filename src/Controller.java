@@ -1,4 +1,7 @@
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -18,7 +21,7 @@ public class Controller extends Thread{
 	
 	// constructor
 	
-	public Controller(Variable[] mainMemory, ArrayList<Process> processList,ArrayList<Command> commandList) {
+	public Controller(Variable[] mainMemory, ArrayList<Process> processList,ArrayList<Command> commandList) throws FileNotFoundException {
 		
 		this.mainMemory = mainMemory;
 		this.processList = processList;
@@ -26,11 +29,40 @@ public class Controller extends Thread{
 		
 		disk = new File("disk.txt");
 		outputTextFile = new File("outputTextFile.txt");
+		
+		// clearing the disk file
+		PrintWriter writer = new PrintWriter(disk);
+		writer.print("");
+		writer.close();
+		
+		// clearing the output file
+		PrintWriter writerOut = new PrintWriter(outputTextFile);
+		writerOut.print("");
+		writerOut.close();
 	}
 	
 	@Override
 	public void run(){
 		
+		while(!commandList.isEmpty()){
+			
+			Command first = commandList.get(0);
+			try {
+				first.doCommand(mainMemory,  disk,  outputTextFile);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+			commandList.remove(0);
+		}
+		
+		System.out.println("Command List size : ");
+		System.out.println(commandList.size());
+		
+		/*
 		startTime = System.currentTimeMillis();		
 		
 		while(!commandList.isEmpty()){
@@ -48,6 +80,7 @@ public class Controller extends Thread{
 			updateReadyQueue(processList);
 			
 		}
+		*/
 				
 	}
 	

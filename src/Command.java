@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -59,6 +60,23 @@ public class Command {
 	// release
 	public int release(Variable[] mainMemory) throws IOException {
 		
+		// checking if array is empty or full
+		boolean empty = true;
+		for (int i=0; i<mainMemory.length; i++) {
+		  if (mainMemory[i] != null) {
+			empty = false;
+		    break;
+		  }
+		}
+		
+		if(empty == true) {
+			
+			System.out.println("Error : Reading an Empty Main Memory ... Exit");
+			System.exit(1);
+		}
+		
+		// if it has something 
+		
 		for(int i = 0; i < mainMemory.length; i++) {
 			
         	int varID = mainMemory[i].getVariableID();
@@ -67,7 +85,7 @@ public class Command {
         	if(varID == variableID) {
         		
         		System.out.print("Releasing Variable : ");
-        		System.out.print(varID);
+        		System.out.println(varID);
         		
         		mainMemory[i] = null;
         		
@@ -75,7 +93,10 @@ public class Command {
         	}
 		}
 		
-		return -1; // error
+		// error : not found target
+		System.out.println("Error: Attempting to Release a Variable that does not exist ... ");
+		
+		return -1; // error : not found target 
 	}
 	
 	// lookup
@@ -99,9 +120,19 @@ public class Command {
 				
 				// swap to read the variable from disk to memory
 				
-				this.swapDiskMemory(mainMemory, disk, variableID);
+				if(readDisk(disk, variableID).getVariableID() == variableID) { // if it exists in disk 
+					
+					this.swapDiskMemory(mainMemory, disk, variableID);
+					
+					return this.readMemory(mainMemory, variableID).getValue(); // read the variable in 
+				}
 				
-				return this.readMemory(mainMemory, variableID).getValue(); // read the variable in 
+				else {
+					
+					System.out.println("Variable not in main memory or disk");
+					return -1;
+				}
+				
 			}
 		}
 	}
@@ -116,6 +147,8 @@ public class Command {
 		int high = 1000;
 		int delayTime = r.nextInt(high-low) + low;
 		
+		//delayTime = 1000;
+		
 		// case statement here
 		
 		String lineString = "";
@@ -123,8 +156,8 @@ public class Command {
 		switch (commandType) {
 		case "Store":
 			
-			lineString = "STORE : " + Integer.toString(variableID) + Integer.toString(value);
-			//this.writeOutputText(lineString, outputTextFile);
+			lineString = "STORE : " + Integer.toString(variableID) + " " + Integer.toString(value);
+			this.writeOutputText(lineString, outputTextFile);
 			
 			this.store(mainMemory, disk);
 			
@@ -134,8 +167,8 @@ public class Command {
 			
 		case "Release":
 			
-			lineString = "RELEASE : " + Integer.toString(variableID) + Integer.toString(value);
-			//this.writeOutputText(lineString, outputTextFile);
+			lineString = "RELEASE : " + Integer.toString(variableID) + " " + Integer.toString(value);
+			this.writeOutputText(lineString, outputTextFile);
 			
 			this.release(mainMemory);
 			
@@ -145,10 +178,12 @@ public class Command {
 			
 		case "Lookup":
 			
-			lineString = "RELEASE : " + Integer.toString(variableID) + Integer.toString(value);
-			//this.writeOutputText(lineString, outputTextFile);
+			lineString = "LOOKUP : " + Integer.toString(variableID) + " " + Integer.toString(value);
+			this.writeOutputText(lineString, outputTextFile);
 			
-			this.lookup(mainMemory, disk);
+			int value = this.lookup(mainMemory, disk);
+			
+			System.out.println("Value : " + Integer.toString(value));
 			
 			TimeUnit.MILLISECONDS.sleep(delayTime);
 	
@@ -232,6 +267,21 @@ public class Command {
 		// if found -> returns variable
 		// if not -> return error
 		
+		// checking if array is empty or full
+		boolean empty = true;
+		for (int i=0; i<mainMemory.length; i++) {
+		  if (mainMemory[i] != null) {
+			empty = false;
+		    break;
+		  }
+		}
+		
+		if(empty == true) {
+			
+			System.out.println("Error : Reading an Empty Main Memory ... Exit");
+			System.exit(1);
+		}
+		
 		System.out.println("reading mainMemory ...");
 		
 		// init variable to be returned
@@ -246,7 +296,7 @@ public class Command {
         	if(varID == variableID) {
         		
         		System.out.print("Found Variable : ");
-        		System.out.print(varID);
+        		System.out.println(varID);
         		
         		// increment its accessCounter
         		mainMemory[i].incrementAccessCounter();
@@ -309,6 +359,8 @@ public class Command {
 		
 		for (int i=0; i<mainMemory.length; i++) {
 			if (mainMemory[i].getLastAccessedCounter() >= maxCounter) {
+				
+				maxCounter = mainMemory[i].getLastAccessedCounter();
 				variableIndexLRA = i;
 			}
 		}		
@@ -336,14 +388,19 @@ public class Command {
 		// return the element deleted
 		// renames it to orginal file
 		
-		File temp = new File("temp.txt");
-	    BufferedWriter bw = new BufferedWriter(new FileWriter(temp));
+		// UPDATED -> 
+		// read in the disk to save state
+		// clear the disk
+		// write what we want 
 		
         // Reading disk
         Scanner scanner = new Scanner(new FileInputStream(disk.getAbsolutePath()));
         
         // init variable 
         Variable variable = new Variable(-1,-1);
+        
+        // init string array (to contain the lines of the disk file)
+        ArrayList<String> diskContentArrayList = new ArrayList<String>();
               
         while(scanner.hasNextLine()){
         	
@@ -363,14 +420,30 @@ public class Command {
         		System.out.print("Found Variable : ");
         		System.out.println(varID);
         		
-        		currentLine = "";
+        		continue;
         	}
         	
-        	bw.write(currentLine + System.getProperty("line.separator"));
+        	diskContentArrayList.add(currentLine);
         }
         
-        disk.delete();
-        temp.renameTo(disk); // rename the temp file
+		// clearing the disk file
+		PrintWriter writer = new PrintWriter(disk);
+		writer.print("");
+		writer.close();
+        
+        
+        // write to disk
+        
+		FileWriter writerOut = new FileWriter(disk,true);
+		
+		for(int i = 0; i < diskContentArrayList.size(); i++) {
+			
+			String line = diskContentArrayList.get(i);
+			
+			writerOut.write(line + System.getProperty("line.separator"));
+		}
+        
+		writerOut.close();
         
         return variable;
 	}
@@ -378,8 +451,8 @@ public class Command {
 	// write to output file
 	public void writeOutputText(String line, File output) throws IOException {
 		
-		FileWriter fileWriter = new FileWriter(output);
-	    fileWriter.write(line);
+		FileWriter fileWriter = new FileWriter(output,true); // true flag to not overwrite file 
+	    fileWriter.write(line + System.getProperty("line.separator"));
 	    fileWriter.close();
 	}
 }
