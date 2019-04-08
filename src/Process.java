@@ -28,12 +28,14 @@ public class Process extends Thread{
 			
 			//System.out.println(System.currentTimeMillis() / 1000);
 			
-			try{
+			try {
 				mutex.acquire();
-				Command firstCommand = commandList.get(0);
-				firstCommand.doCommand(mainMemory,  disk,  outputTextFile);	//Needs implementation
-				commandList.remove(0);	//Remove first element in list
-				mutex.release();
+				if (!commandList.isEmpty()) {
+					Command firstCommand = commandList.get(0);
+					firstCommand.doCommand(mainMemory, disk, outputTextFile);    //Needs implementation
+					commandList.remove(0);    //Remove first element in list
+					mutex.release();
+				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -240,8 +240,8 @@ public class Command {
         	if(varID == variableID) {
         		variable = new Variable(varID, varValue);
         		
-        		System.out.print("Found Variable : ");
-        		System.out.println(varID);
+        		//System.out.print("Found Variable : ");
+        		//System.out.println(varID);
         	}
         }
                 

@@ -63,8 +63,8 @@ public class Controller extends Thread{
 		System.out.println(commandList.size());
 		*/
 
-		startTime = System.currentTimeMillis();		
-
+		startTime = System.currentTimeMillis();
+		System.out.println("Controller starts " + (System.currentTimeMillis() - startTime));
 		while(!commandList.isEmpty()){
 									
 			if(checkReadyQueue(readyQueue)){
@@ -86,7 +86,7 @@ public class Controller extends Thread{
 			
 		}
 
-				
+		System.out.println("Controller ends after " + (System.currentTimeMillis() - startTime));
 	}
 	
 	//Check if ready queue is empty
