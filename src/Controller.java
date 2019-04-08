@@ -43,7 +43,7 @@ public class Controller extends Thread{
 	
 	@Override
 	public void run(){
-		
+		/*
 		while(!commandList.isEmpty()){
 			
 			Command first = commandList.get(0);
@@ -58,13 +58,13 @@ public class Controller extends Thread{
 			}	
 			commandList.remove(0);
 		}
-		
+
 		System.out.println("Command List size : ");
 		System.out.println(commandList.size());
-		
-		/*
+		*/
+
 		startTime = System.currentTimeMillis();		
-		
+
 		while(!commandList.isEmpty()){
 									
 			if(checkReadyQueue(readyQueue)){
@@ -73,14 +73,19 @@ public class Controller extends Thread{
 				currentProcess.setMainMemory(mainMemory);
 				currentProcess.setDisk(disk);
 				currentProcess.setOutputTextFile(outputTextFile);
-				currentProcess.start();
+				if(!currentProcess.isAlive()) {
+					currentProcess.start();
+				}
+
+
+
 				readyQueue.remove();
 			}
 			
 			updateReadyQueue(processList);
 			
 		}
-		*/
+
 				
 	}
 	

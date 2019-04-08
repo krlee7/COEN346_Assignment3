@@ -44,15 +44,16 @@ public class Command {
 		
 		if (!this.writeMemory(mainMemory, variableID, value)) { // if was not able to store in main memory
 			
-			System.out.println("Main Memory was too full, insert into disk ...");
+			System.out.println("STORE into disk Variable " + variableID + ", Value " + value);
 			
 			this.writeDisk(disk, variableID, value);
 			
 			return 0;
 		}
-		
-		System.out.println("Inserted variable into main memory successful ...");
-		
+
+		else {
+			System.out.println("STORE Variable " + variableID + ", Value " + value + " into main memory successful ...");
+		}
 		return 0;
 		
 	}
@@ -84,8 +85,8 @@ public class Command {
         	
         	if(varID == variableID) {
         		
-        		System.out.print("Releasing Variable : ");
-        		System.out.println(varID);
+        		System.out.println("Releasing Variable : " + variableID);
+
         		
         		mainMemory[i] = null;
         		
@@ -112,7 +113,7 @@ public class Command {
 			Variable variable = this.readDisk(disk, variableID);
 			
 			if(this.writeMemory(mainMemory, variable.getVariableID(), variable.getValue())) {  // if it was able to write in the main memory 
-				
+				System.out.println("LOOKUP direct place into main memory Variable " + variableID );
 				return this.readMemory(mainMemory, variableID).getValue(); // read the variable in 
 			}
 			
@@ -123,7 +124,7 @@ public class Command {
 				if(readDisk(disk, variableID).getVariableID() == variableID) { // if it exists in disk 
 					
 					this.swapDiskMemory(mainMemory, disk, variableID);
-					
+					System.out.println("SWAP into main memory Variable " + variableID );
 					return this.readMemory(mainMemory, variableID).getValue(); // read the variable in 
 				}
 				

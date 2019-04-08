@@ -21,28 +21,31 @@ public class Process extends Thread{
 	public void run(){
 		long startTime = System.currentTimeMillis();
 		long processEndTime = startTime + this.serviceTime;
+
+		System.out.println("Process " + this.id + " started ");
 				
 		while(System.currentTimeMillis() <= processEndTime){
 			
-			System.out.println(System.currentTimeMillis() / 1000);
+			//System.out.println(System.currentTimeMillis() / 1000);
 			
 			try{
 				mutex.acquire();
 				Command firstCommand = commandList.get(0);
 				firstCommand.doCommand(mainMemory,  disk,  outputTextFile);	//Needs implementation
 				commandList.remove(0);	//Remove first element in list
+				mutex.release();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}finally{
-				mutex.release();
-			} 
+			}
+
 			
 			
 		}
+		System.out.println("Process " + this.id + " is finished after " + (System.currentTimeMillis() - startTime));
 		
 	}
 	
