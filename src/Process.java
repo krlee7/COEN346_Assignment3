@@ -50,11 +50,6 @@ public class Process extends Thread{
 				mutex.release();
 			}
 
-			try {
-				TimeUnit.MILLISECONDS.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 
 		}
 		System.out.println("Process " + this.id + " is finished after " + (System.currentTimeMillis() - startTime));
