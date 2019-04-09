@@ -46,25 +46,6 @@ public class Controller extends Thread{
 	
 	@Override
 	public void run(){
-		/*
-		while(!commandList.isEmpty()){
-			
-			Command first = commandList.get(0);
-			try {
-				first.doCommand(mainMemory,  disk,  outputTextFile);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}	
-			commandList.remove(0);
-		}
-
-		System.out.println("Command List size : ");
-		System.out.println(commandList.size());
-		*/
 
 		startTime = System.currentTimeMillis();
 		//System.out.println("Controller starts " + (System.currentTimeMillis() - startTime));
@@ -79,9 +60,10 @@ public class Controller extends Thread{
 					currentProcess.setMainMemory(mainMemory);
 					currentProcess.setDisk(disk);
 					currentProcess.setOutputTextFile(outputTextFile);
+					currentProcess.setStartTime(startTime);
 
                     if(!currentProcess.isAlive()) {
-						System.out.print("TIME IS "  +(System.currentTimeMillis() - startTime) + " ");
+
                         currentProcess.start();
                     }
 
@@ -101,7 +83,6 @@ public class Controller extends Thread{
 			
 		}
 
-		System.out.println("Controller ends after " + (System.currentTimeMillis() - startTime));
 	}
 	
 	//Check if ready queue is empty

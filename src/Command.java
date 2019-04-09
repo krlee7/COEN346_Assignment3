@@ -79,20 +79,19 @@ public class Command {
 		// if it has something 
 
 			for (int i = 0; i < mainMemory.length; i++) {
-				if(mainMemory[i] != null ) {
-					int varID = mainMemory[i].getVariableID();
-					int varValue = mainMemory[i].getValue();
 
-					if (varID == variableID) {
+				int varID = mainMemory[i].getVariableID();
+				int varValue = mainMemory[i].getValue();
 
-						//System.out.println("Releasing Variable : " + variableID);
+				if (varID == variableID) {
 
+					//System.out.println("Releasing Variable : " + variableID);
 
-						mainMemory[i] = null;
+					mainMemory[i] = null;
 
-						return 0;
-					}
-			}
+					return 0;
+				}
+
 		}
 		// error : not found target
 		System.out.println("Error: Attempting to Release a Variable that does not exist ... ");
@@ -139,8 +138,8 @@ public class Command {
 	}
 	
 	// execute command
-	public void doCommand(Variable[] mainMemory, File disk, File outputTextFile) throws IOException, InterruptedException {
-		
+	public void doCommand(Variable[] mainMemory, File disk, File outputTextFile, long realStartTime) throws IOException, InterruptedException {
+		System.out.print("Time: " + (System.currentTimeMillis() - realStartTime) + " ");
 		// random time gen
 		
 		Random r = new Random();
@@ -156,7 +155,7 @@ public class Command {
 		
 		switch (commandType) {
 		case "Store":
-			
+
 			lineString = "STORE : " + Integer.toString(variableID) + " " + Integer.toString(value);
 			this.writeOutputText(lineString, outputTextFile);
 			
@@ -290,20 +289,17 @@ public class Command {
 		Variable variable = new Variable(-1,-1);
 		
 		for(int i = 0; i < mainMemory.length; i++) {
-			if(mainMemory[i] != null) {
-				int varID = mainMemory[i].getVariableID();
-				int varValue = mainMemory[i].getValue();
+			int varID = mainMemory[i].getVariableID();
+			int varValue = mainMemory[i].getValue();
+			if (varID == variableID) {
+				//System.out.print("Found Variable : ");
+				//System.out.println(varID);
 
-				if (varID == variableID) {
+				// increment its accessCounter
+				mainMemory[i].incrementAccessCounter();
 
-					//System.out.print("Found Variable : ");
-					//System.out.println(varID);
+				return mainMemory[i];
 
-					// increment its accessCounter
-					mainMemory[i].incrementAccessCounter();
-
-					return mainMemory[i];
-				}
 			}
 		}
 		
@@ -360,13 +356,12 @@ public class Command {
 		int variableIndexLRA = -1;
 
 		for (int i = 0; i < mainMemory.length; i++) {
-			if(mainMemory[i] != null) {
-				if (mainMemory[i].getLastAccessedCounter() >= maxCounter) {
 
-					maxCounter = mainMemory[i].getLastAccessedCounter();
-					variableIndexLRA = i;
-				}
+			if (mainMemory[i].getLastAccessedCounter() >= maxCounter) {
+				maxCounter = mainMemory[i].getLastAccessedCounter();
+				variableIndexLRA = i;
 			}
+
 		}
 		
 		Variable tempMMVariable = mainMemory[variableIndexLRA];

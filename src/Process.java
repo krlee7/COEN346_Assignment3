@@ -15,6 +15,7 @@ public class Process extends Thread{
 	private Variable[] mainMemory;
 	File disk; // filepath to our file on our system
 	File outputTextFile; // file to output our results
+	long realStartTime;
 	
 	Semaphore mutex = new Semaphore(1);
 	
@@ -23,7 +24,7 @@ public class Process extends Thread{
 		long startTime = System.currentTimeMillis();
 		long processEndTime = startTime + this.serviceTime;
 
-		System.out.println("Process " + this.id + " started ");
+		System.out.println("Time: " + (System.currentTimeMillis() - realStartTime) + " ,Process " + this.id + " started ");
 				
 		while(System.currentTimeMillis() <= processEndTime){
 			
@@ -34,9 +35,14 @@ public class Process extends Thread{
 					mutex.acquire();
 					Command firstCommand = commandList.get(0);
 
-					System.out.println("Process " + this.id + " executing command : " + firstCommand.commandType + " " + firstCommand.variableID + " " + firstCommand.value );
+					System.out.println("Process " + this.id + " ," + firstCommand.commandType + ": Variable " + firstCommand.variableID + " ,Value: " + firstCommand.value );
+					try {
+						TimeUnit.MILLISECONDS.sleep(10);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 					commandList.remove(0);    //Remove first element in list
-					firstCommand.doCommand(mainMemory, disk, outputTextFile);    //Needs implementation
+					firstCommand.doCommand(mainMemory, disk, outputTextFile, realStartTime);    //Needs implementation
 
 
 				}
@@ -52,7 +58,7 @@ public class Process extends Thread{
 
 
 		}
-		System.out.println("Process " + this.id + " is finished after " + (System.currentTimeMillis() - startTime));
+		//System.out.println("Process " + this.id + " is finished after " + (System.currentTimeMillis() - startTime));
 		
 	}
 	
@@ -101,6 +107,10 @@ public class Process extends Thread{
 		System.out.print(readyTime);
 		System.out.print(" ");
 		System.out.println(serviceTime);
+	}
+
+	public void setStartTime(long realStartTime){
+		this.realStartTime = realStartTime;
 	}
 	
 }
