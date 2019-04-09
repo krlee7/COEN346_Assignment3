@@ -40,11 +40,11 @@ public class Command {
 	// store
 	public int store(Variable[] mainMemory, File disk) throws IOException {
 		
-		System.out.println("Attempting to store variable into Main Memory ...");
+		//System.out.println("Attempting to store variable into Main Memory ...");
 		
 		if (!this.writeMemory(mainMemory, variableID, value)) { // if was not able to store in main memory
 			
-			System.out.println("STORE into disk Variable " + variableID + ", Value " + value);
+			//System.out.println("STORE into disk Variable " + variableID + ", Value " + value);
 			
 			this.writeDisk(disk, variableID, value);
 			
@@ -52,7 +52,7 @@ public class Command {
 		}
 
 		else {
-			System.out.println("STORE Variable " + variableID + ", Value " + value + " into main memory successful ...");
+			//System.out.println("STORE Variable " + variableID + ", Value " + value + " into main memory successful ...");
 		}
 		return 0;
 		
@@ -77,23 +77,23 @@ public class Command {
 		}
 		
 		// if it has something 
-		
-		for(int i = 0; i < mainMemory.length; i++) {
-			
-        	int varID = mainMemory[i].getVariableID();
-        	int varValue = mainMemory[i].getValue();
-        	
-        	if(varID == variableID) {
-        		
-        		System.out.println("Releasing Variable : " + variableID);
 
-        		
-        		mainMemory[i] = null;
-        		
-        		return 0;
-        	}
+			for (int i = 0; i < mainMemory.length; i++) {
+				if(mainMemory[i] != null ) {
+					int varID = mainMemory[i].getVariableID();
+					int varValue = mainMemory[i].getValue();
+
+					if (varID == variableID) {
+
+						//System.out.println("Releasing Variable : " + variableID);
+
+
+						mainMemory[i] = null;
+
+						return 0;
+					}
+			}
 		}
-		
 		// error : not found target
 		System.out.println("Error: Attempting to Release a Variable that does not exist ... ");
 		
@@ -113,7 +113,7 @@ public class Command {
 			Variable variable = this.readDisk(disk, variableID);
 			
 			if(this.writeMemory(mainMemory, variable.getVariableID(), variable.getValue())) {  // if it was able to write in the main memory 
-				System.out.println("LOOKUP direct place into main memory Variable " + variableID );
+				//System.out.println("LOOKUP direct place into main memory Variable " + variableID );
 				return this.readMemory(mainMemory, variableID).getValue(); // read the variable in 
 			}
 			
@@ -124,7 +124,7 @@ public class Command {
 				if(readDisk(disk, variableID).getVariableID() == variableID) { // if it exists in disk 
 					
 					this.swapDiskMemory(mainMemory, disk, variableID);
-					System.out.println("SWAP into main memory Variable " + variableID );
+					//System.out.println("SWAP into main memory Variable " + variableID );
 					return this.readMemory(mainMemory, variableID).getValue(); // read the variable in 
 				}
 				
@@ -184,7 +184,7 @@ public class Command {
 			
 			int value = this.lookup(mainMemory, disk);
 			
-			System.out.println("Value : " + Integer.toString(value));
+			//System.out.println("Value : " + Integer.toString(value));
 			
 			TimeUnit.MILLISECONDS.sleep(delayTime);
 	
@@ -218,7 +218,7 @@ public class Command {
 		
 		// *** //
 		
-		System.out.println("reading disk ...");
+		//System.out.println("reading disk ...");
 		
 		// init variable to be returned
 		
@@ -283,27 +283,28 @@ public class Command {
 			System.exit(1);
 		}
 		
-		System.out.println("reading mainMemory ...");
+		//System.out.println("reading mainMemory ...");
 		
 		// init variable to be returned
 		
 		Variable variable = new Variable(-1,-1);
 		
 		for(int i = 0; i < mainMemory.length; i++) {
-			
-        	int varID = mainMemory[i].getVariableID();
-        	int varValue = mainMemory[i].getValue();
-        	
-        	if(varID == variableID) {
-        		
-        		System.out.print("Found Variable : ");
-        		System.out.println(varID);
-        		
-        		// increment its accessCounter
-        		mainMemory[i].incrementAccessCounter();
-        		
-        		return mainMemory[i];
-        	}
+			if(mainMemory[i] != null) {
+				int varID = mainMemory[i].getVariableID();
+				int varValue = mainMemory[i].getValue();
+
+				if (varID == variableID) {
+
+					//System.out.print("Found Variable : ");
+					//System.out.println(varID);
+
+					// increment its accessCounter
+					mainMemory[i].incrementAccessCounter();
+
+					return mainMemory[i];
+				}
+			}
 		}
 		
 		// if nothing found
@@ -357,14 +358,16 @@ public class Command {
 		// remove element from main memory
 		int maxCounter = 0;
 		int variableIndexLRA = -1;
-		
-		for (int i=0; i<mainMemory.length; i++) {
-			if (mainMemory[i].getLastAccessedCounter() >= maxCounter) {
-				
-				maxCounter = mainMemory[i].getLastAccessedCounter();
-				variableIndexLRA = i;
+
+		for (int i = 0; i < mainMemory.length; i++) {
+			if(mainMemory[i] != null) {
+				if (mainMemory[i].getLastAccessedCounter() >= maxCounter) {
+
+					maxCounter = mainMemory[i].getLastAccessedCounter();
+					variableIndexLRA = i;
+				}
 			}
-		}		
+		}
 		
 		Variable tempMMVariable = mainMemory[variableIndexLRA];
 		mainMemory[variableIndexLRA] = null;
@@ -418,8 +421,8 @@ public class Command {
         	if(varID == variableID) {
         		variable = new Variable(varID, varValue);
         		
-        		System.out.print("Found Variable : ");
-        		System.out.println(varID);
+        		//System.out.print("Found Variable : ");
+        		//System.out.println(varID);
         		
         		continue;
         	}

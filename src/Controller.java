@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 public class Controller extends Thread{
 	private ArrayList<Command> commandList;	//Read file
@@ -18,6 +20,7 @@ public class Controller extends Thread{
 	
 	Queue<Process> readyQueue = new LinkedList<>();
 	long startTime;
+    Semaphore mutex = new Semaphore(1);
 	
 	// constructor
 	
@@ -64,22 +67,39 @@ public class Controller extends Thread{
 		*/
 
 		startTime = System.currentTimeMillis();
-		System.out.println("Controller starts " + (System.currentTimeMillis() - startTime));
+		//System.out.println("Controller starts " + (System.currentTimeMillis() - startTime));
 		while(!commandList.isEmpty()){
-									
-			if(checkReadyQueue(readyQueue)){
-				Process currentProcess = getFrontProcess(readyQueue);
-				currentProcess.setCommandList(commandList);
-				currentProcess.setMainMemory(mainMemory);
-				currentProcess.setDisk(disk);
-				currentProcess.setOutputTextFile(outputTextFile);
-				if(!currentProcess.isAlive()) {
-					currentProcess.start();
+			try {
+			mutex.acquire();
+			if(checkReadyQueue(readyQueue) == true){
+
+					Process currentProcess = getFrontProcess(readyQueue);
+					readyQueue.remove();
+					System.out.println(readyQueue.peek());
+					currentProcess.setCommandList(commandList);
+					currentProcess.setMainMemory(mainMemory);
+					currentProcess.setDisk(disk);
+					currentProcess.setOutputTextFile(outputTextFile);
+
+                    if(!currentProcess.isAlive()) {
+						System.out.print("TIME IS "  +(System.currentTimeMillis() - startTime) + " ");
+                        currentProcess.start();
+                    }
+
+
+				try {
+					TimeUnit.MILLISECONDS.sleep(10);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
 
 
 
-				readyQueue.remove();
+			}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}finally{
+				mutex.release();
 			}
 			
 			updateReadyQueue(processList);
@@ -108,6 +128,7 @@ public class Controller extends Thread{
 			if((System.currentTimeMillis()-startTime) >= ((Process) processList.get(i)).getReadyTime()){
 				
 				readyQueue.add((Process) processList.get(i));
+				processList.remove(i);
 			}
 		}
 	}

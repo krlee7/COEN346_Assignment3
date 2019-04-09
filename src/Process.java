@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 public class Process extends Thread{
 	
@@ -29,12 +30,15 @@ public class Process extends Thread{
 			//System.out.println(System.currentTimeMillis() / 1000);
 			
 			try {
-				mutex.acquire();
 				if (!commandList.isEmpty()) {
+					mutex.acquire();
 					Command firstCommand = commandList.get(0);
-					firstCommand.doCommand(mainMemory, disk, outputTextFile);    //Needs implementation
+
+					System.out.println("Process " + this.id + " executing command : " + firstCommand.commandType + " " + firstCommand.variableID + " " + firstCommand.value );
 					commandList.remove(0);    //Remove first element in list
-					mutex.release();
+					firstCommand.doCommand(mainMemory, disk, outputTextFile);    //Needs implementation
+
+
 				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -42,10 +46,16 @@ public class Process extends Thread{
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			}finally{
+				mutex.release();
 			}
 
-			
-			
+			try {
+				TimeUnit.MILLISECONDS.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
 		}
 		System.out.println("Process " + this.id + " is finished after " + (System.currentTimeMillis() - startTime));
 		
