@@ -1,8 +1,16 @@
-STORE : 1 5
-STORE : 2 3
-STORE : 3 7
-LOOKUP : 3 0
-LOOKUP : 2 0
-RELEASE : 1 0
-STORE : 1 8
-LOOKUP : 1 0
+Clock: 1000, Process 1: started
+Clock: 1011, Process 1 Store: Variable 1 Value 5
+Clock: 1946, Process 1 Store: Variable 2 Value 3
+Clock: 2000, Process 0: started
+Clock: 2013, Process 0 Store: Variable 3 Value 7
+Clock: 2028, Process 1, Swap: Variable 2 with Variable 3
+Clock: 2026, Process 1 Lookup: Variable 3 Value 7
+Clock: 2587, Process 0, Swap: Variable 3 with Variable 2
+Clock: 2583, Process 0 Lookup: Variable 2 Value 3
+Clock: 2817, Process 0 Release: Variable 1
+Clock: 3009, Process 1: finished
+Clock: 3798, Process 0 Store: Variable 1 Value 8
+Clock: 4000, Process 2: started
+Clock: 4015, Process 2 Lookup: Variable 1 Value 8
+Clock: 5001, Process 0: finished
+Clock: 7001, Process 2: finished

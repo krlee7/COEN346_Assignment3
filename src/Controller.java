@@ -55,7 +55,6 @@ public class Controller extends Thread{
 
 					Process currentProcess = getFrontProcess(readyQueue);
 					readyQueue.remove();
-					System.out.println(readyQueue.peek());
 					currentProcess.setCommandList(commandList);
 					currentProcess.setMainMemory(mainMemory);
 					currentProcess.setDisk(disk);
@@ -66,7 +65,6 @@ public class Controller extends Thread{
 
                         currentProcess.start();
                     }
-
 
 				try {
 					TimeUnit.MILLISECONDS.sleep(10);
