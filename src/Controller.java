@@ -69,8 +69,7 @@ public class Controller extends Thread{
 		startTime = System.currentTimeMillis();
 		//System.out.println("Controller starts " + (System.currentTimeMillis() - startTime));
 		while(!commandList.isEmpty()){
-			try {
-			mutex.acquire();
+
 			if(checkReadyQueue(readyQueue) == true){
 
 					Process currentProcess = getFrontProcess(readyQueue);
@@ -96,11 +95,7 @@ public class Controller extends Thread{
 
 
 			}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}finally{
-				mutex.release();
-			}
+
 			
 			updateReadyQueue(processList);
 			
